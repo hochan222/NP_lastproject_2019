@@ -21,3 +21,11 @@ class IoT_data(models.Model):
 
     def __str__(self):
         return str(self.state)
+    
+class IoT_home(models.Model):
+    time = models.IntegerField()
+    temperature = models.IntegerField()
+    humidity = models.IntegerField()
+
+    def __str__(self):
+        return str(self.time)

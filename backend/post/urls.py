@@ -21,5 +21,6 @@ urlpatterns = [
     # path('', views.ListPost.as_view()),
     # path('crawl/', views.ListBachelorData.as_view()),
     # path('<int:pk>/', views.DetailPost.as_view()),
-    path('', views.IoTPost.as_view()),
+    # path('', views.IoTPost.as_view()),
+    path('', views.IoThomePost.as_view()),
 ]

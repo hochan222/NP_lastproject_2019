@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Bachelor_data, IoT_data
+from .models import Post, Bachelor_data, IoT_data, IoT_home
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -28,3 +28,12 @@ class IoTSerializer(serializers.ModelSerializer):
             'state',
         )
         model = IoT_data
+
+class IoThomeSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = (
+            'time',
+            'temperature',
+            'humidity'
+        )
+        model = IoT_home
