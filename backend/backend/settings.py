@@ -10,7 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
-import os
+import os, json
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,12 +26,23 @@ SECRET_KEY = '8kl+h-p-yf5zwn%s+vvbmj%7*-z-65yeal%0rq9--hdxq!!ffx'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '.ap-northeast-2.compute.amazonaws.com',
-    '52.79.237.25',
-]
+ALLOWED_HOSTS = []
 
+secret_file = os.path.join(BASE_DIR, 'settings_debug.json') # secrets.json 파일 위치를 명시
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    """비밀 변수를 가져오거나 명시적 예외를 반환한다."""
+    try:
+        print(secrets["django"][setting])
+        return secrets["django"][setting]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
+
+ALLOWED_HOSTS = get_secret("allowed_hosts")
 
 # Application definition
 
