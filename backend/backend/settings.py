@@ -99,7 +99,6 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "templates/build/"),
     os.path.join(BASE_DIR, "templates/build/static"),
-    STATIC_DIR,
 ]
 
 ROOT_DIR = os.path.dirname(BASE_DIR)
