@@ -30,7 +30,7 @@ class App extends Component {
       try {
         //   let time, temperature, humidity;
         
-          const res = await fetch('http://127.0.0.1:8000/api/');
+          const res = await fetch('http://ec2-52-79-237-25.ap-northeast-2.compute.amazonaws.com:8080/api/');
           const posts = await res.json();
           this.time = [];
           let temperature = [], humidity = [];
