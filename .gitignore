@@ -316,3 +316,6 @@ dmypy.json
 .pyre/
 
 # End of https://www.gitignore.io/api/node,python
+
+# secret token
+/secret

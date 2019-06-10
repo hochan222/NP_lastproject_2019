@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-secret_file = os.path.join(BASE_DIR, 'settings_debug.json') # secrets.json 파일 위치를 명시
+secret_file = os.path.join(BASE_DIR, 'settings_debug.json') 
 
 with open(secret_file) as f:
     secrets = json.loads(f.read())
