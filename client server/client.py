@@ -1,5 +1,10 @@
 import socket, json, time, sys
 import os
+import win32evtlog
+from time import sleep
+import threading
+import cv2
+import datetime
 
 def getData():
     with open('data_file.json') as outfile:
@@ -9,6 +14,52 @@ def getData():
 def writeData(data):
     with open('data_file.json', 'w') as outfile:
         json.dump(data, outfile)
+
+def lockComp():
+    winpath = os.environ["windir"]
+    os.system(winpath + r'\system32\rundll32 user32.dll, LockWorkStation')
+
+def imageCapture(eventId):
+    global isCap
+    currentDT = datetime.datetime.now()
+    imageName = 'img_', str(eventId) + '.png'
+    video_capture = cv2.VideoCapture(0)
+    # Check success
+    if not video_capture.isOpened():
+        raise Exception("Could not open video device")
+    # Read picture. ret === True on success
+    ret, frame = video_capture.read()
+    cv2.imwrite(str(eventId) + currentDT.strftime("_%Y%m%d%H%M%S") + '.png',frame)
+    # Close device
+    video_capture.release()
+    isCap = False
+
+def checkLogon():
+    global isCap
+    login = 0
+    server = 'localhost'
+    logtype = 'Security'
+    hand = win32evtlog.OpenEventLog(server,logtype)
+    flags = win32evtlog.EVENTLOG_BACKWARDS_READ|win32evtlog.EVENTLOG_SEQUENTIAL_READ
+    total = win32evtlog.GetNumberOfEventLogRecords(hand)
+    events = win32evtlog.ReadEventLog(hand, flags,0)
+    event = events[0]
+    print(event.EventID)
+    if event.EventID == 4625:
+        print('Login Failed Detected!')
+        try:
+            if not isCap:
+                handler = threading.Thread(target=imageCapture, args=(event.EventID,))
+                handler.setDaemon(True)
+                handler.start()
+            isCap = True
+        except:
+            print("Error: unable to start thread")
+        login = 1
+        return login
+    if event.EventID == 4624:
+        print('Login Detected!')
+        return
 
 class IoTClient:
     def __init__(self, server_addr):
@@ -37,7 +88,7 @@ class IoTClient:
         self.time_to_expire += interval
         return []
 
-    def run(self):
+    def run(self, data):
         msgid = 0
 
         while True:
@@ -61,11 +112,13 @@ class IoTClient:
                         raise OSError('Server abnormally terminated')
                     response = json.loads(response_bytes.decode('utf-8'))
                     msgid = response.get('msgid')
-                    writeData(response.get('data'))
+                    activate = response.get('activate')
                     if msgid and msgid in self.requests:
                         del self.requests[msgid]
                     else:
                         print('{}: illegal msgid received. Ignored'.format(msgid))
+                    if activate:
+                        lockComp()
             except Exception as e:
                 print(e)
                 break
@@ -84,4 +137,9 @@ if __name__ == '__main__':
     port = 5555
     print(data)
     client = IoTClient((host, port))
-    client.run()
+    try:
+        clientHandler = threading.Thread(target=client.run, args=(data,))
+        clientHandler.setDaemon(True)
+        clientHandler.start()
+    except Exception as e:
+        raise e

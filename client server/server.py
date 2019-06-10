@@ -4,6 +4,7 @@ import os
 
 class IoTRequestHandler(socketserver.StreamRequestHandler):
     def handle(self):
+        global activate
         client = self.request.getpeername()
         print("Client connecting: {}".format(client))
 
@@ -44,6 +45,10 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
             # reply response message
             response = dict(status=status, deviceid=request.get('deviceid'),
                             msgid=request.get('msgid'))
+            if activate:
+                response['activate'] = 1
+            else:
+                response['activate'] = 0
             response = json.dumps(response)
             self.wfile.write(response.encode('utf-8') + b'\n')
             self.wfile.flush()
@@ -52,6 +57,7 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
         # end of for loop
         print('Client closing: {}'.format(client))
 
+activate = 0
 if __name__ == '__main__':
 
     if not os.path.exists('data_file.json'):
@@ -67,3 +73,4 @@ if __name__ == '__main__':
         print('Server starts: {}'.format(serv_addr))
         server.serve_forever()
 
+    print('Server Done This is thread~')
