@@ -15,9 +15,15 @@ def writeData(data):
     with open('data_file.json', 'w') as outfile:
         json.dump(data, outfile)
 
-def lockComp():
-    winpath = os.environ["windir"]
-    os.system(winpath + r'\system32\rundll32 user32.dll, LockWorkStation')
+def lockComp(data):
+    data['lock'] = 1
+    writeData(data)
+    try:
+        winpath = os.environ["windir"]
+        os.system(winpath + r'\system32\rundll32 user32.dll, LockWorkStation')
+    except Exception as e:
+        raise e
+
 
 def imageCapture(eventId):
     global isCap
@@ -34,32 +40,36 @@ def imageCapture(eventId):
     video_capture.release()
     isCap = False
 
-def checkLogon():
+def checkLogon(data):
     global isCap
     login = 0
     server = 'localhost'
     logtype = 'Security'
-    hand = win32evtlog.OpenEventLog(server,logtype)
-    flags = win32evtlog.EVENTLOG_BACKWARDS_READ|win32evtlog.EVENTLOG_SEQUENTIAL_READ
-    total = win32evtlog.GetNumberOfEventLogRecords(hand)
-    events = win32evtlog.ReadEventLog(hand, flags,0)
-    event = events[0]
-    print(event.EventID)
-    if event.EventID == 4625:
-        print('Login Failed Detected!')
-        try:
-            if not isCap:
-                handler = threading.Thread(target=imageCapture, args=(event.EventID,))
-                handler.setDaemon(True)
-                handler.start()
-            isCap = True
-        except:
-            print("Error: unable to start thread")
-        login = 1
-        return login
-    if event.EventID == 4624:
-        print('Login Detected!')
-        return
+    while True:
+        hand = win32evtlog.OpenEventLog(server,logtype)
+        flags = win32evtlog.EVENTLOG_BACKWARDS_READ|win32evtlog.EVENTLOG_SEQUENTIAL_READ
+        total = win32evtlog.GetNumberOfEventLogRecords(hand)
+        events = win32evtlog.ReadEventLog(hand, flags,0)
+        event = events[0]
+        print(event.EventID)
+        if event.EventID == 4625:
+            print('Login Failed Detected!')
+            try:
+                if not isCap:
+                    handler = threading.Thread(target=imageCapture, args=(event.EventID,))
+                    handler.setDaemon(True)
+                    handler.start()
+                isCap = True
+            except:
+                print("Error: unable to start thread")
+            data['fLock'] = 1
+            writeData(data)
+        if event.EventID == 4624:
+            print('Login Detected!')
+            data['fLock'] = 0
+            data['lock'] = 0
+            writeData(data)
+
 
 class IoTClient:
     def __init__(self, server_addr):
@@ -88,7 +98,7 @@ class IoTClient:
         self.time_to_expire += interval
         return []
 
-    def run(self, data):
+    def run(self, dataSet):
         msgid = 0
 
         while True:
@@ -118,7 +128,7 @@ class IoTClient:
                     else:
                         print('{}: illegal msgid received. Ignored'.format(msgid))
                     if activate:
-                        lockComp()
+                        lockComp(dataSet)
             except Exception as e:
                 print(e)
                 break
@@ -127,8 +137,8 @@ if __name__ == '__main__':
 
     if not os.path.exists('data_file.json'):
         data = {
-                'lock': '0',
-                'fLock': '0'
+                'lock': 0,
+                'fLock': 0
             }
         with open('data_file.json', 'w') as outfile:
             json.dump(data, outfile)
@@ -143,3 +153,12 @@ if __name__ == '__main__':
         clientHandler.start()
     except Exception as e:
         raise e
+
+    try:
+        eventHandler = threading.Thread(target=checkLogon, args=(data,))
+        eventHandler.setDaemon(True)
+        eventHandler.start()
+    except Exception as e:
+        raise e
+
+    print('Client Successfully Up and Running...!')

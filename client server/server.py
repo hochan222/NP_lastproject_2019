@@ -62,8 +62,8 @@ if __name__ == '__main__':
 
     if not os.path.exists('data_file.json'):
         data = {
-                'lock': '0',
-                'fLock': '0'
+                'lock': 0,
+                'fLock': 0
             }
         with open('data_file.json', 'w') as outfile:
             json.dump(data, outfile)
