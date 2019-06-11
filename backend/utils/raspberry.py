@@ -53,7 +53,7 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
 logging.basicConfig(filename='', level=logging.DEBUG,
                     format='%(asctime)s:%(levelname)s:%(message)s')
 
-serv_addr = ("", 8095)
+serv_addr = ("ec2-13-125-236-248.ap-northeast-2.compute.amazonaws.com", 8095)
 with socketserver.ThreadingTCPServer(serv_addr, IoTRequestHandler) as server:
     logging.info('Server starts: {}'.format(serv_addr))
     server.serve_forever()
