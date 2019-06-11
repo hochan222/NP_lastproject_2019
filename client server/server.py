@@ -36,10 +36,10 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
             with open("data_file.json", "w") as write_file:
                 json.dump(data, write_file)
 
-            if lock:
+            if lock == 1:
                 print('Windows is locked!')
 
-            if fLock:
+            if fLock == 1:
                 print('Logon failed ditected!')
 
             # reply response message
@@ -68,7 +68,7 @@ if __name__ == '__main__':
         with open('data_file.json', 'w') as outfile:
             json.dump(data, outfile)
 
-    serv_addr = ("10.10.1.236", 5555)
+    serv_addr = ("192.168.0.12", 5555)
     with socketserver.ThreadingTCPServer(serv_addr, IoTRequestHandler) as server:
         print('Server starts: {}'.format(serv_addr))
         server.serve_forever()

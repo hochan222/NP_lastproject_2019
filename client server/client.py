@@ -1,4 +1,5 @@
 import socket, json, time, sys
+import selectors
 import os
 import win32evtlog
 from time import sleep
@@ -16,17 +17,18 @@ def writeData(data):
         json.dump(data, outfile)
 
 def lockComp(data):
-    data['lock'] = 1
-    writeData(data)
     try:
+        data['lock'] = 1
+        writeData(data)
         winpath = os.environ["windir"]
         os.system(winpath + r'\system32\rundll32 user32.dll, LockWorkStation')
     except Exception as e:
+        data['lock'] = 0
+        writeData(data)
         raise e
 
 
 def imageCapture(eventId):
-    global isCap
     currentDT = datetime.datetime.now()
     imageName = 'img_', str(eventId) + '.png'
     video_capture = cv2.VideoCapture(0)
@@ -41,7 +43,6 @@ def imageCapture(eventId):
     isCap = False
 
 def checkLogon(data):
-    global isCap
     login = 0
     server = 'localhost'
     logtype = 'Security'
@@ -55,11 +56,7 @@ def checkLogon(data):
         if event.EventID == 4625:
             print('Login Failed Detected!')
             try:
-                if not isCap:
-                    handler = threading.Thread(target=imageCapture, args=(event.EventID,))
-                    handler.setDaemon(True)
-                    handler.start()
-                isCap = True
+                imageCapture(event.EventID)
             except:
                 print("Error: unable to start thread")
             data['fLock'] = 1
@@ -69,6 +66,7 @@ def checkLogon(data):
             data['fLock'] = 0
             data['lock'] = 0
             writeData(data)
+        sleep(1)
 
 
 class IoTClient:
@@ -134,31 +132,20 @@ class IoTClient:
                 break
 
 if __name__ == '__main__':
-
-    if not os.path.exists('data_file.json'):
-        data = {
+    data = {
                 'lock': 0,
                 'fLock': 0
             }
+    if not os.path.exists('data_file.json'):
         with open('data_file.json', 'w') as outfile:
             json.dump(data, outfile)
 
-    host = '10.10.1.236'
+    host = '192.168.0.12'
     port = 5555
     print(data)
     client = IoTClient((host, port))
-    try:
-        clientHandler = threading.Thread(target=client.run, args=(data,))
-        clientHandler.setDaemon(True)
-        clientHandler.start()
-    except Exception as e:
-        raise e
-
-    try:
-        eventHandler = threading.Thread(target=checkLogon, args=(data,))
-        eventHandler.setDaemon(True)
-        eventHandler.start()
-    except Exception as e:
-        raise e
+    eventHandler = threading.Thread(target=checkLogon, args=(data,))
+    eventHandler.start()
+    client.run(data)
 
     print('Client Successfully Up and Running...!')
