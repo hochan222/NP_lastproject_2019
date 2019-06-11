@@ -2,7 +2,7 @@
     "django": {
       "allowed_hosts": [
         "localhost",
-        ".ap-northeast-2.compute.amazonaws.com",
+        "ec2-54-180-85-80.ap-northeast-2.compute.amazonaws.com",
         "52.79.237.25",
         "127.0.0.1"
       ]

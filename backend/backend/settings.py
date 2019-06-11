@@ -59,6 +59,7 @@ INSTALLED_APPS = [
 
     'myapp',
     'post',
+    'img_post',
 ]
 
 MIDDLEWARE = [
