@@ -51,11 +51,11 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
             activate = {}
             if rssi:    # both the temperature and humidity reported
                 # activate actuators if necessary to control
-                if (rssi < 50 ) :
+                if (rssi < 60 ) :
                     activate['buzzer'] = 'ON'
                     buzzer_state = "ON"
 
-                elif (rssi >= 50):
+                elif (rssi >= 60):
                     activate['buzzer'] = 'OFF'
                     buzzer_state = "OFF"
 
