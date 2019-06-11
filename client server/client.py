@@ -43,6 +43,7 @@ def imageCapture(eventId):
     isCap = False
 
 def checkLogon(data):
+    last = 0
     login = 0
     server = 'localhost'
     logtype = 'Security'
@@ -52,21 +53,27 @@ def checkLogon(data):
         total = win32evtlog.GetNumberOfEventLogRecords(hand)
         events = win32evtlog.ReadEventLog(hand, flags,0)
         event = events[0]
-        print(event.EventID)
-        if event.EventID == 4625:
-            print('Login Failed Detected!')
-            try:
-                imageCapture(event.EventID)
-            except:
-                print("Error: unable to start thread")
-            data['fLock'] = 1
-            writeData(data)
-        if event.EventID == 4624:
-            print('Login Detected!')
-            data['fLock'] = 0
-            data['lock'] = 0
-            writeData(data)
-        sleep(1)
+        if not last == event.EventID:
+            print(event.EventID)
+            if event.EventID == 4625:
+                print('Login Failed Detected!')
+                try:
+                    imageCapture(event.EventID)
+                except:
+                    print("Error: unable to start thread")
+                data['fLock'] = 1
+                writeData(data)
+            elif event.EventID == 4624:
+                print('Login Detected!')
+                data['fLock'] = 0
+                data['lock'] = 0
+                writeData(data)
+            elif event.EventID == 4634:
+                print('Windows Locked!')
+                data['fLock'] = 0
+                data['lock'] = 1
+                writeData(data)
+            last = event.EventID
 
 
 class IoTClient:
