@@ -27,16 +27,27 @@ for server to inform the client to activate the actuators if needed.
 
 <LF> ::= b'\n'
 """
-
-import socket, json, time, sys, socketserver
-import selectors, uuid
+import RPi.GPIO as GPIO
+import json, time, sys, socket
+import SocketServer  as socketserver
+import uuid
+import selectors34 as selectors
 import random, math
 import threading
 import logging
-
 # print uuid.uuid4()
 
+BUZZER_PIN = 11
 
+def setup():
+	GPIO.setmode(GPIO.BOARD)
+	GPIO.setup(BUZZER_PIN, GPIO.OUT)
+
+def on():
+	GPIO.output(BUZZER_PIN, GPIO.HIGH)
+
+def off():
+	GPIO.output(BUZZER_PIN, GPIO.LOW)
 
 class IoTClient:
     def __init__(self, server_addr, deviceid):
@@ -101,9 +112,13 @@ class IoTClient:
                     # msgid in response allows to identify the specific request message
                     # It enables asynchronous transmission of request messages in pipelining
                     msgid = response.get('msgid')
-                    buzzer_state = response.get('buzzer_state')
+                    buzzer_state = response.get('activate')['buzzer']
+                    setup()
                     if buzzer_state == "ON":
                         print("on")
+                        on()
+                        time.sleep(0.5)
+                        off()
                     elif buzzer_state == "OFF":
                         print("off")
 
@@ -121,8 +136,7 @@ class IoTClient:
 
 
 if __name__ == '__main__':
-
-    logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s:%(levelname)s:%(message)s')
-    client = IoTClient(("127.0.0.1", 8096), 2323)
+    #setup()
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s:%(levelname)s:%(message)s')
+    client = IoTClient(("ec2-13-125-224-23.ap-northeast-2.compute.amazonaws.com", 8095), 2323)
     client.run()
