@@ -175,7 +175,7 @@ def rssi_renew_thread():
 
 
 def raspberry_post():
-    rasp_addr = ("", 8095)
+    rasp_addr = ("", 8096)
     with socketserver.ThreadingTCPServer(rasp_addr, raspberry_post_server) as server:
         logging.info('rasp Server starts: {}'.format(rasp_addr))
         server.serve_forever()

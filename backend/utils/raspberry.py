@@ -124,5 +124,5 @@ if __name__ == '__main__':
 
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s:%(levelname)s:%(message)s')
-    client = IoTClient(("127.0.0.1", 8095), 2323)
+    client = IoTClient(("127.0.0.1", 8096), 2323)
     client.run()
