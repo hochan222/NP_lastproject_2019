@@ -46,9 +46,9 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
             response = dict(status=status, deviceid=request.get('deviceid'),
                             msgid=request.get('msgid'))
             if activate:
-                response['activate'] = 1
+                response['activate'] = True
             else:
-                response['activate'] = 0
+                response['activate'] = False
             response = json.dumps(response)
             self.wfile.write(response.encode('utf-8') + b'\n')
             self.wfile.flush()
@@ -57,7 +57,7 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
         # end of for loop
         print('Client closing: {}'.format(client))
 
-activate = 0
+activate = False
 if __name__ == '__main__':
 
     if not os.path.exists('data_file.json'):
@@ -68,7 +68,7 @@ if __name__ == '__main__':
         with open('data_file.json', 'w') as outfile:
             json.dump(data, outfile)
 
-    serv_addr = ("192.168.0.12", 5555)
+    serv_addr = ("192.168.0.27", 5555)
     with socketserver.ThreadingTCPServer(serv_addr, IoTRequestHandler) as server:
         print('Server starts: {}'.format(serv_addr))
         server.serve_forever()
