@@ -168,14 +168,14 @@ class raspberry_post_server(socketserver.StreamRequestHandler):
 
 
 def rssi_renew_thread():
-    rssi_addr = ("13.125.224.23", 8090)
+    rssi_addr = ("", 8090)
     with socketserver.ThreadingTCPServer(rssi_addr, rssiRenew) as server:
         logging.info('rssi Server starts: {}'.format(rssi_addr))
         server.serve_forever()
 
 
 def raspberry_post():
-    rasp_addr = ("13.125.224.23", 8095)
+    rasp_addr = ("", 8095)
     with socketserver.ThreadingTCPServer(rasp_addr, raspberry_post_server) as server:
         logging.info('rasp Server starts: {}'.format(rasp_addr))
         server.serve_forever()
@@ -186,7 +186,7 @@ d.start()
 e = threading.Thread(name='rasp', target=raspberry_post)
 e.start()
 
-serv_addr = ("13.125.224.23", 10007)
+serv_addr = ("", 10007)
 with socketserver.ThreadingTCPServer(serv_addr, IoTRequestHandler) as server:
     logging.info('Server starts: {}'.format(serv_addr))
     server.serve_forever()
