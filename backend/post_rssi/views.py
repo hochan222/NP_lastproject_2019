@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 import json
-
+import math
 # Create your views here.
 from django.views.generic import View
 from django.http import HttpResponse
@@ -28,13 +28,21 @@ from post_rssi.models import Post_rssi
 def rssi_post(request):
     if request.method == 'POST':
         Post_rssi.objects.all().delete()
-        received_json_data=json.loads(request.body)
-        for beacon in received_json_data.get('beacons'):
-            if beacon["beaconAddress"] == "18:62:E4:3D:F7:00": 
-                if beacon["ibeaconData"]["uuid"] == "74278bda-b644-4520-8f0c-720eaf059935":
-                    print(beacon["rssi"])
-                    print(beacon["txPower"])
 
+        received_json_data=json.loads(request.body)
+
+        for beacon in received_json_data.get('beacons'):
+            if beacon["beaconAddress"] == "18:62:E4:3D:F7:00":
+                if beacon["ibeaconData"]["uuid"] == "74278bda-b644-4520-8f0c-720eaf059935":
+                    rssi = beacon["rssi"]
+                    txPower = beacon["txPower"]
+                    ratio = rssi*1.0/txPower;
+                    dist = 0
+                    if ratio < 1.0:
+                        dist = math.pow(ratio, 10)
+                    else:
+                        dist =  (0.89976)*math.pow(ratio,7.7095) + 0.111
+                    print(dist)
             else:
                 print("mac not match")
         # print(Post_rssi.objects.all())
