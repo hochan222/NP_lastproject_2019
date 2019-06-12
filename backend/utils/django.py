@@ -68,13 +68,14 @@ class note_book_server(socketserver.StreamRequestHandler):
                 response['noteBookActivate'] = True
             else:
                 response['noteBookActivate'] = False
-            response = json.dumps(response)
-            self.wfile.write(response.encode('utf-8') + b'\n')
-            self.wfile.flush()
             if response.get('noteBookActivate'):
                 print(response.get('deviceid'), ' - Status - noteBookActivate : True')
             else:
                 print(response.get('deviceid'), ' - Status - noteBookActivate : False')
+            response = json.dumps(response)
+            self.wfile.write(response.encode('utf-8') + b'\n')
+            self.wfile.flush()
+
 
         print('Client closing: {}'.format(client))
 
