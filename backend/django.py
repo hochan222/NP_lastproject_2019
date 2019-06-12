@@ -2,16 +2,15 @@ import socket, sys
 import socketserver, json, selectors
 import logging
 import threading
-import time
+import time, json
 
 from slacker import Slacker
-import os, json
 
+import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
 
-from django.db import models
-# import django
-# django.setup()
+import django
+django.setup()
 
 from post_rssi.models import one_rssi
 

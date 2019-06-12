@@ -8,8 +8,6 @@ from slacker import Slacker
 import os, json
 
 
-
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOKEN = []
 # secret_file = os.path.join(BASE_DIR, 'secret', 'slack_token.json')
