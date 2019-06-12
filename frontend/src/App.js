@@ -29,7 +29,7 @@ class App extends Component {
         
           const res = await fetch('http://ec2-13-209-76-226.ap-northeast-2.compute.amazonaws.com:8080/rssi/serial/');
           const posts = await res.json();
-          console.log(post);
+          console.log(posts);
           this.id = [];
           let data = [];
           const newSeries = [];
@@ -72,15 +72,6 @@ class App extends Component {
                         width="500"
                     />
                 </div>
-            </div>
-            <div>
-                {this.state.posts.map(item => (
-                    <div key={item.time}>
-                        <h1>Time {item.time}</h1>
-                        <p>Temperature <span>{item.temperature}</span></p>
-                        <p>Humidity <span>{item.humidity}</span></p>
-                    </div>
-                ))}
             </div>
         </>
       );
