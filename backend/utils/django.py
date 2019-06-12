@@ -59,7 +59,7 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
         global buzzer_state
         rssi = one_rssi.objects.all()
         rssi = rssi[0]['data']
-        
+
         client = self.request.getpeername()
         logging.info("Client connecting: {}".format(client))
 
@@ -90,7 +90,7 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
             # Insert sensor data into DB tables
             # and retrieve information to control the actuators
             pass
-    
+
 
             print(rssi)
 
@@ -153,11 +153,11 @@ class rssiRenew(socketserver.StreamRequestHandler):
             data = request.get('data')
             if data:        # data exists
                 rssi = float(data.get('rssi'))
-            
+
             # reply response message
             response = dict(status=status, deviceid=request.get('deviceid'),
                             msgid=request.get('msgid'))
-        
+
             response = json.dumps(response)
             self.wfile.write(response.encode('utf-8') + b'\n')
             self.wfile.flush()
@@ -190,6 +190,7 @@ class note_book_server(socketserver.StreamRequestHandler):
                 print("{}:{}".format(client, request))
 
             data = request.get('data')
+            rssi = request.get('msgid') #test rssi activate
             if data:
                 lock = data.get('lock')
                 fLock = data.get('fLock')
@@ -211,7 +212,7 @@ class note_book_server(socketserver.StreamRequestHandler):
 
             response = dict(status=status, deviceid=request.get('deviceid'),
                             msgid=request.get('msgid'))
-            if noteBookActivate:
+            if rssi > 5:
                 response['noteBookActivate'] = True
             else:
                 response['noteBookActivate'] = False
@@ -295,7 +296,7 @@ def server_for_notebook():
         with open(os.path.join(BASE_DIR, 'data_file.json'), 'w') as outfile:
             json.dump(data, outfile)
     print('Server Done This is thread~')
-    
+
     with socketserver.ThreadingTCPServer(notebook_addr, note_book_server) as server:
         logging.info('rasp Server starts: {}'.format(notebook_addr))
         server.serve_forever()

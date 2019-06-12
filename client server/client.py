@@ -17,6 +17,7 @@ def writeData(data):
         json.dump(data, outfile)
 
 def lockComp():
+    global isLocked
     data = getData()
     try:
         data['lock'] = True
@@ -26,6 +27,7 @@ def lockComp():
         data['lock'] = False
         raise e
     writeData(data)
+    isLocked = True
 
 
 def imageCapture(eventId):
@@ -40,6 +42,7 @@ def imageCapture(eventId):
     isCap = False
 
 def checkLogon(dataSet):
+    global isLocked
     last = 0
     lastEvents = []
     login = 0
@@ -61,6 +64,7 @@ def checkLogon(dataSet):
                         data['fLock'] = False
                         data['lock'] = False
                         writeData(data)
+                        isLocked = False
                         break
                     elif eventId == 4625:
                         print('Login Failed Detected!')
@@ -106,6 +110,7 @@ class IoTClient:
         return []
 
     def run(self):
+        global isLocked
         msgid = 0
 
         while True:
@@ -143,11 +148,13 @@ class IoTClient:
                     else:
                         print('{}: illegal msgid received. Ignored'.format(msgid))
                     if activate:
-                        lockComp()
+                        if not isLocked:
+                            lockComp()
             except Exception as e:
                 print(e)
                 break
 
+isLocked = False
 if __name__ == '__main__':
     data = {
                 'lock': False,
