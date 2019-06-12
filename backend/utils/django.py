@@ -277,6 +277,7 @@ def raspberry_post():
 def server_for_notebook():
     activate = False
     notebook_addr = ("", 5555)
+    print("5555")
     if not os.path.exists('data_file.json'):
         data = {
                 'lock': False,
