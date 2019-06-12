@@ -31,7 +31,8 @@ def rssi_post(request):
         received_json_data=json.loads(request.body)
         for beacon in received_json_data.get('beacons'):
             if beacon["beaconAddress"] == "18:62:E4:3D:F7:00": 
-                print("a")
+                if beacon["ibeaconData"]["uuid"] == "74278bda-b644-4520-8f0c-720eaf059935":
+                    print(beacon["ibeaconData"]["uuid"]) 
             else:
                 print("b")
         # print(Post_rssi.objects.all())
