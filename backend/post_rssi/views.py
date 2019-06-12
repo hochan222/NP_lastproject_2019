@@ -42,6 +42,7 @@ def rssi_post(request):
                         dist = math.pow(ratio, 10)
                     else:
                         dist =  (0.89976)*math.pow(ratio,7.7095) + 0.111
+                    print('RSSI : ', rssi, 'txPower : ', txPower)
                     print(dist)
             else:
                 print("mac not match")
