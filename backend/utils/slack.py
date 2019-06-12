@@ -15,7 +15,7 @@ TOKEN = []
 #     return secrets["slackToken"]
 
 def slack_notify(text=None, channel='#backend', username='알림봇', attachments=None):
-    TOKEN = "xoxb-623136227107-661697401447-o4BAf5MRWzamhrxPu2oWtMT5"
+    TOKEN = "xoxb-623136227107-661697401447-782PfeMJFhmWMoTSwSaCkWzC"
     # TOKEN = get_secret("slackToken")
     slack = Slacker(TOKEN)
     attachments = [{
