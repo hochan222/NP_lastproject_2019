@@ -7,6 +7,12 @@ import time
 from slacker import Slacker
 import os, json
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
+
+import django
+django.setup()
+
+from post_rssi.models import one_rssi
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOKEN = []
@@ -55,7 +61,9 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
     def handle(self):
         global rssi
         global buzzer_state
-
+        rssi = one_rssi.objects.all()
+        rssi = rssi[0]['data']
+        
         client = self.request.getpeername()
         logging.info("Client connecting: {}".format(client))
 
@@ -86,6 +94,8 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
             # Insert sensor data into DB tables
             # and retrieve information to control the actuators
             pass
+    
+
             print(rssi)
 
             # apply rules to control actuators
