@@ -85,7 +85,7 @@ class note_book_server(socketserver.StreamRequestHandler):
 
             response = dict(status=status, deviceid=request.get('deviceid'),
                             msgid=request.get('msgid'))
-            if rssiDist > 8:
+            if rssiDist > 6:
                 response['noteBookActivate'] = True
             else:
                 response['noteBookActivate'] = False
@@ -132,7 +132,7 @@ class raspberry_post_server(socketserver.StreamRequestHandler):
             print('PI : ',rssiDist)
             print(type(rssiDist))
             if fLock:
-                if (rssiDist > 8.1):
+                if (rssiDist > 6.1):
                     slack_notify()
                     print('Buzzer Activate')
                     response['activate'] = True
