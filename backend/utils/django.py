@@ -96,22 +96,22 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
             print(rssi)
 
             # apply rules to control actuators
-            activate = {}
+            buzzerActivate = False
             #if rssi:    # both the temperature and humidity reported
                 # activate actuators if necessary to control
             if (rssiDist < 8 or fLock):
-                activate['buzzer'] = True
+                buzzerActivate = True
                 buzzer_state = "ON"
                 slack_notify()
             else:
-                activate['buzzer'] = False
+                buzzerActivate = False
                 buzzer_state = "OFF"
 
             # reply response message
             response = dict(status=status, deviceid=request.get('deviceid'),
                             msgid=request.get('msgid'))
-
-            response['activate'] = activate
+            if buzzerActivate:
+                response['activate'] = True
             response = json.dumps(response)
             self.wfile.write(response.encode('utf-8') + b'\n')
             self.wfile.flush()
