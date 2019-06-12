@@ -5,4 +5,4 @@ class Post_rssi(models.Model):
     distance = models.IntegerField()
 
     def __str__(self):
-        return self.data
+        return self.distance
