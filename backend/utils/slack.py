@@ -1,6 +1,6 @@
 from slacker import Slacker
 import os, json
-from django.core.exceptions import ImproperlyConfigured
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOKEN = []
@@ -12,15 +12,11 @@ with open(secret_file) as f:
 
 def get_secret(setting, secrets=secrets):
     """비밀 변수를 가져오거나 명시적 예외를 반환한다."""
-    try:
-        return secrets["slackToken"]
-    except KeyError:
-        error_msg = "Set the {} environment variable".format(setting)
-        raise ImproperlyConfigured(error_msg)
+    return secrets["slackToken"]
 
 def slack_notify(text=None, channel='#backend', username='알림봇', attachments=None):
     # TOKEN = get_secret("slackToken")
-    TOKEN = "xoxb-623136227107-661697401447-LGhp25lqduy8VLqWzZ5z1lPA"
+    TOKEN = "xoxb-623136227107-661697401447-zS0wWhpiaouxHV9hxNi1w4ti"
     slack = Slacker(TOKEN)
     attachments = [{
     "pretext": "경고 알림",

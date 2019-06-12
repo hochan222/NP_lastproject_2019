@@ -1,7 +1,7 @@
-"""backend URL Configuration
+"""hufs_crawl URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/2.1/topics/http/urls/
+    https://docs.djangoproject.com/en/2.2/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -13,13 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
+
+from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('myapp.urls')),
-    path('api/', include('post.urls')),
-    path('img/', include('img_post.urls')),
-    path('rssi/', include('post_rssi.urls')),
+    # path('', views.ListPost.as_view()),
+    # path('crawl/', views.ListBachelorData.as_view()),
+    # path('<int:pk>/', views.DetailPost.as_view()),
+    # path('', views.IoTPost.as_view()),
+    path('', views.rssi_post)
 ]
