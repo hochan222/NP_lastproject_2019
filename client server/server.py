@@ -1,6 +1,9 @@
 import socketserver, json
 import logging
 import os
+import cv2
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class IoTRequestHandler(socketserver.StreamRequestHandler):
     def handle(self):
@@ -9,11 +12,9 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
         print("Client connecting: {}".format(client))
 
         for line in self.rfile:
-            # get a request message in JSON and converts into dict
             try:
                 request = json.loads(line.decode('utf-8'))
             except ValueError as e:
-                # reply ERROR response message
                 error_msg = '{}: json decoding error'.format(e)
                 status = 'ERROR {}'.format(error_msg)
                 response = dict(status=status, deviceid=request.get('deviceid'),
@@ -27,22 +28,26 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
                 status = 'OK'
                 print("{}:{}".format(client, request))
 
-            # extract the sensor data from the request
             data = request.get('data')
-            if data:        # data exists
+            if data:
                 lock = data.get('lock')
                 fLock = data.get('fLock')
+                frame = data.get('image')
 
-            with open("data_file.json", "w") as write_file:
+            with open(os.path.join(BASE_DIR, 'data_file.json'), "w") as write_file:
                 json.dump(data, write_file)
 
-            if lock == 1:
+            if lock:
                 print('Windows is locked!')
 
-            if fLock == 1:
+            if fLock:
                 print('Logon failed ditected!')
+                try:
+                    pass
+                    #cv2.imwrite('image.png',frame)
+                except Exception as e:
+                    print('Image not saved!')
 
-            # reply response message
             response = dict(status=status, deviceid=request.get('deviceid'),
                             msgid=request.get('msgid'))
             if activate:
@@ -54,18 +59,20 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
             self.wfile.flush()
             print("%s" % response)
 
-        # end of for loop
         print('Client closing: {}'.format(client))
 
 activate = False
 if __name__ == '__main__':
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
     if not os.path.exists('data_file.json'):
         data = {
-                'lock': 0,
-                'fLock': 0
+                'lock': False,
+                'fLock': False,
+                'image': 0
             }
-        with open('data_file.json', 'w') as outfile:
+        with open(os.path.join(BASE_DIR, 'data_file.json'), 'w') as outfile:
             json.dump(data, outfile)
 
     serv_addr = ("192.168.0.27", 5555)

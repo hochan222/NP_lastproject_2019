@@ -16,43 +16,42 @@ def writeData(data):
     with open('data_file.json', 'w') as outfile:
         json.dump(data, outfile)
 
-def lockComp(data):
+def lockComp():
+    data = getData()
     try:
         data['lock'] = True
-        writeData(data)
         winpath = os.environ["windir"]
         os.system(winpath + r'\system32\rundll32 user32.dll, LockWorkStation')
     except Exception as e:
         data['lock'] = False
-        writeData(data)
         raise e
+    writeData(data)
 
 
 def imageCapture(eventId):
     currentDT = datetime.datetime.now()
     imageName = 'img_', str(eventId) + '.png'
     video_capture = cv2.VideoCapture(False)
-    # Check success
     if not video_capture.isOpened():
         raise Exception("Could not open video device")
-    # Read picture. ret === True on success
     ret, frame = video_capture.read()
-    cv2.imwrite(str(eventId) + currentDT.strftime("_%Y%m%d%H%M%S") + '.png',frame)
-    # Close device
+    data = getData()
+    data['image'] = frame
+    #writeData(data)
     video_capture.release()
     isCap = False
 
-def checkLogon(data):
-    last = False
-    login = False
+def checkLogon(dataSet):
+    last = 0
+    login = 0
     server = 'localhost'
     logtype = 'Security'
     while True:
         hand = win32evtlog.OpenEventLog(server,logtype)
         flags = win32evtlog.EVENTLOG_BACKWARDS_READ|win32evtlog.EVENTLOG_SEQUENTIAL_READ
         total = win32evtlog.GetNumberOfEventLogRecords(hand)
-        events = win32evtlog.ReadEventLog(hand, flags,False)
-        event = events[False]
+        events = win32evtlog.ReadEventLog(hand, flags,0)
+        event = events[0]
         if not last == event.EventID:
             print(event.EventID)
             if event.EventID == 4625:
@@ -61,16 +60,19 @@ def checkLogon(data):
                     imageCapture(event.EventID)
                 except:
                     print("Error: unable to Capture")
+                data = getData()
                 data['fLock'] = True
                 writeData(data)
             elif event.EventID == 4624:
                 print('Login Detected!')
+                data = getData()
                 data['fLock'] = False
                 data['lock'] = False
                 writeData(data)
             elif event.EventID == 4634:
                 print('Windows Locked!')
-                data['fLock'] = False
+                data = getData()
+                #data['fLock'] = False
                 data['lock'] = True
                 writeData(data)
             last = event.EventID
@@ -103,8 +105,8 @@ class IoTClient:
         self.time_to_expire += interval
         return []
 
-    def run(self, dataSet):
-        msgid = False
+    def run(self):
+        msgid = 0
 
         while True:
             try:
@@ -133,7 +135,7 @@ class IoTClient:
                     else:
                         print('{}: illegal msgid received. Ignored'.format(msgid))
                     if activate:
-                        lockComp(dataSet)
+                        lockComp()
             except Exception as e:
                 print(e)
                 break
@@ -141,7 +143,8 @@ class IoTClient:
 if __name__ == '__main__':
     data = {
                 'lock': False,
-                'fLock': False
+                'fLock': False,
+                'image': 0
             }
     if not os.path.exists('data_file.json'):
         with open('data_file.json', 'w') as outfile:
@@ -153,6 +156,6 @@ if __name__ == '__main__':
     client = IoTClient((host, port))
     eventHandler = threading.Thread(target=checkLogon, args=(data,))
     eventHandler.start()
-    client.run(data)
+    client.run()
 
     print('Client Successfully Up and Running...!')
