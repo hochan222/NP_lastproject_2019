@@ -6,6 +6,7 @@ import math
 from django.views.generic import View
 from django.http import HttpResponse
 from django.conf import settings
+from rest_framework import generics
 
 from datetime import date, time, datetime
 import os
