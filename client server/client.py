@@ -8,12 +8,12 @@ import cv2
 import datetime
 
 def getData():
-    with open('data_file.json') as outfile:
+    with open('client_data.json') as outfile:
         data = json.load(outfile)
     return data
 
 def writeData(data):
-    with open('data_file.json', 'w') as outfile:
+    with open('client_data.json', 'w') as outfile:
         json.dump(data, outfile)
 
 def lockComp():
@@ -35,14 +35,13 @@ def imageCapture(eventId):
     if not video_capture.isOpened():
         raise Exception("Could not open video device")
     ret, frame = video_capture.read()
-    data = getData()
-    data['image'] = frame
-    #writeData(data)
+    print('Image Captured!')
     video_capture.release()
     isCap = False
 
 def checkLogon(dataSet):
     last = 0
+    lastEvents = []
     login = 0
     server = 'localhost'
     logtype = 'Security'
@@ -51,31 +50,32 @@ def checkLogon(dataSet):
         flags = win32evtlog.EVENTLOG_BACKWARDS_READ|win32evtlog.EVENTLOG_SEQUENTIAL_READ
         total = win32evtlog.GetNumberOfEventLogRecords(hand)
         events = win32evtlog.ReadEventLog(hand, flags,0)
-        event = events[0]
-        if not last == event.EventID:
-            print(event.EventID)
-            if event.EventID == 4625:
-                print('Login Failed Detected!')
-                try:
-                    imageCapture(event.EventID)
-                except:
-                    print("Error: unable to Capture")
-                data = getData()
-                data['fLock'] = True
-                writeData(data)
-            elif event.EventID == 4624:
-                print('Login Detected!')
-                data = getData()
-                data['fLock'] = False
-                data['lock'] = False
-                writeData(data)
-            elif event.EventID == 4634:
-                print('Windows Locked!')
-                data = getData()
-                #data['fLock'] = False
-                data['lock'] = True
-                writeData(data)
-            last = event.EventID
+        eventFive = [event.EventID for event in events[:7]]
+        for eventId in eventFive:
+            if eventId not in lastEvents:
+                if not last == eventId:
+                    #print(eventId)
+                    if eventId == 4624:
+                        print('Login Detected!')
+                        data = getData()
+                        data['fLock'] = False
+                        data['lock'] = False
+                        writeData(data)
+                        break
+                    elif eventId == 4625:
+                        print('Login Failed Detected!')
+                        try:
+                            imageCapture(eventId)
+                        except:
+                            print("Error: unable to Capture")
+                        data = getData()
+                        data['fLock'] = True
+                        writeData(data)
+                        break
+                    last = eventId
+        lastEvents = eventFive
+        print(lastEvents)
+        sleep(4)
 
 
 class IoTClient:
@@ -114,6 +114,14 @@ class IoTClient:
                 if not events:
                     try:
                         data = getData()
+                        if data['lock']:
+                            print('lock : True')
+                        else:
+                            print('lock : False')
+                        if data['fLock']:
+                            print('fLock : True')
+                        else:
+                            print('fLock : False')
                     except StopIteration:
                         print('Fail to Get Computer Data')
                         break
@@ -146,9 +154,8 @@ if __name__ == '__main__':
                 'fLock': False,
                 'image': 0
             }
-    if not os.path.exists('data_file.json'):
-        with open('data_file.json', 'w') as outfile:
-            json.dump(data, outfile)
+    with open('client_data.json', 'w') as outfile:
+        json.dump(data, outfile)
 
     host = '192.168.0.27'
     port = 5555

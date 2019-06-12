@@ -34,7 +34,7 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
                 fLock = data.get('fLock')
                 frame = data.get('image')
 
-            with open(os.path.join(BASE_DIR, 'data_file.json'), "w") as write_file:
+            with open(os.path.join(BASE_DIR, 'server_data.json'), "w") as write_file:
                 json.dump(data, write_file)
 
             if lock:
@@ -66,13 +66,13 @@ if __name__ == '__main__':
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-    if not os.path.exists('data_file.json'):
+    if not os.path.exists('server_data.json'):
         data = {
                 'lock': False,
                 'fLock': False,
                 'image': 0
             }
-        with open(os.path.join(BASE_DIR, 'data_file.json'), 'w') as outfile:
+        with open(os.path.join(BASE_DIR, 'server_data.json'), 'w') as outfile:
             json.dump(data, outfile)
 
     serv_addr = ("192.168.0.27", 5555)
