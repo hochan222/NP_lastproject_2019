@@ -27,27 +27,30 @@ for server to inform the client to activate the actuators if needed.
 
 <LF> ::= b'\n'
 """
-import RPi.GPIO as GPIO
-import json, time, sys, socket
-import SocketServer  as socketserver
+import SocketServer as socketserver
+import socket, json, time, sys
 import uuid
 import selectors34 as selectors
 import random, math
 import threading
 import logging
+import RPi.GPIO as GPIO
+
 # print uuid.uuid4()
 
-BUZZER_PIN = 11
+Buzzer = 11 
 
-def setup():
+def setup(pin):
+	global BuzzerPin
+	BuzzerPin = pin
 	GPIO.setmode(GPIO.BOARD)
-	GPIO.setup(BUZZER_PIN, GPIO.OUT)
+	GPIO.setup(BuzzerPin, GPIO.OUT)
 
 def on():
-	GPIO.output(BUZZER_PIN, GPIO.HIGH)
+	GPIO.output(BuzzerPin, GPIO.HIGH)
 
 def off():
-	GPIO.output(BUZZER_PIN, GPIO.LOW)
+	GPIO.output(BuzzerPin, GPIO.LOW)
 
 class IoTClient:
     def __init__(self, server_addr, deviceid):
@@ -97,46 +100,43 @@ class IoTClient:
                     # msgid = str(uuid.uuid1())
                     msgid += 1
                     request = dict(method='POST', deviceid=self.deviceid, msgid=msgid, data="")
-                    logging.debug(request)
                     request_bytes = json.dumps(request).encode('utf-8') + b'\n'
                     self.sock.sendall(request_bytes)
                     self.requests[msgid] = request_bytes
+                    print("1")
                 else:               # EVENT_READ
                     response_bytes = self.rfile.readline()     # receive response
+                    print("2")
                     if not response_bytes:
                         self.sock.close()
                         raise OSError('Server abnormally terminated')
                     response = json.loads(response_bytes.decode('utf-8'))
-                    logging.debug(response)
 
                     # msgid in response allows to identify the specific request message
                     # It enables asynchronous transmission of request messages in pipelining
                     msgid = response.get('msgid')
-                    buzzer_state = response.get('activate')['buzzer']
-                    setup()
+                    buzzer_state = response.get('activate')["buzzer"]
+                    print(buzzer_state)
                     if buzzer_state == "ON":
                         print("on")
                         on()
-                        time.sleep(0.5)
+                        time.sleep(1)
                         off()
                     elif buzzer_state == "OFF":
                         print("off")
+                        off()
 
                     if msgid and msgid in self.requests:
                         del self.requests[msgid]
-                    else:
-                        logging.warning('{}: illegal msgid received. Ignored'.format(msgid))
             except Exception as e:
-                logging.error(e)
                 break
         # end of while loop
 
-        logging.info('client terminated')
         self.sock.close()
 
-
 if __name__ == '__main__':
-    #setup()
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s:%(levelname)s:%(message)s')
-    client = IoTClient(("ec2-13-125-224-23.ap-northeast-2.compute.amazonaws.com", 8095), 2323)
+    print("1")
+    setup(Buzzer)
+    print("2")
+    client = IoTClient(("13.209.76.226", 8095),2323)
     client.run()
