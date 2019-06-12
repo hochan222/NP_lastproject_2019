@@ -50,11 +50,14 @@ buzzer_state = None
 noteBookActivate = False
 lock = False
 fLock = False
+rssiDist = 0
 # django main server
 class IoTRequestHandler(socketserver.StreamRequestHandler):
     def handle(self):
         global rssi
         global buzzer_state
+        global rssiDist
+        global fLock
         rssi = one_rssi.objects.all()
         rssi = rssi[0]['data']
 
@@ -96,16 +99,13 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
             activate = {}
             if rssi:    # both the temperature and humidity reported
                 # activate actuators if necessary to control
-                if (rssi < 54 ) :
+                if (rssiDist < 8 or fLock):
                     activate['buzzer'] = 'ON'
                     buzzer_state = "ON"
                     slack_notify()
-                elif (rssi >= 54):
+                else:
                     activate['buzzer'] = 'OFF'
                     buzzer_state = "OFF"
-
-                else:
-                    pass        # nothing to activate actuators
 
             # reply response message
             response = dict(status=status, deviceid=request.get('deviceid'),
@@ -166,7 +166,7 @@ class rssiRenew(socketserver.StreamRequestHandler):
 
 class note_book_server(socketserver.StreamRequestHandler):
     def handle(self):
-        global noteBookActivate, flock, lock
+        global noteBookActivate, flock, lock, rssiDist
         client = self.request.getpeername()
         print("Client connecting: {}".format(client))
 
@@ -199,6 +199,8 @@ class note_book_server(socketserver.StreamRequestHandler):
             with open(os.path.join(BASE_DIR, 'rssi_data.json')) as outfile:
                 rssiData = json.load(outfile)
 
+            rssiDist = rssiData['dist']
+
             if lock:
                 print('Windows is locked!')
 
@@ -212,7 +214,7 @@ class note_book_server(socketserver.StreamRequestHandler):
 
             response = dict(status=status, deviceid=request.get('deviceid'),
                             msgid=request.get('msgid'))
-            if rssiData['dist'] > 8:
+            if rssiDist > 8:
                 response['noteBookActivate'] = True
             else:
                 response['noteBookActivate'] = False
