@@ -81,7 +81,7 @@ class note_book_server(socketserver.StreamRequestHandler):
 
 class raspberry_post_server(socketserver.StreamRequestHandler):
     def handle(self):
-        global buzzer_state, rssiDist, flock
+        global buzzer_state, rssiDist, fLock
 
         client = self.request.getpeername()
         # logging.info("Client connecting: {}".format(client))
