@@ -29,12 +29,12 @@ def rssi_post(request):
     if request.method == 'POST':
         Post_rssi.objects.all().delete()
         received_json_data=json.loads(request.body)
-        print(received_json_data)
+        print(type(received_json_data.get('beacons')))
         # print(Post_rssi.objects.all())
-        
+
         Post_rssi.objects.create(data=received_json_data)
 
-        print(Post_rssi.objects.all())
+        # print(Post_rssi.objects.all())
         # print(request)
     else:
         print(request.FILES)
