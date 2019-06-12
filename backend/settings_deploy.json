@@ -1,7 +1,7 @@
 {
     "django": {
       "allowed_hosts": [
-        ".ap-northeast-2.compute.amazonaws.com"
+        "ec2-13-209-76-226.ap-northeast-2.compute.amazonaws.com"
       ]
     }
   }

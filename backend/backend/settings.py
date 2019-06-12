@@ -59,6 +59,8 @@ INSTALLED_APPS = [
 
     'myapp',
     'post',
+    'img_post',
+    'post_rssi',
 ]
 
 MIDDLEWARE = [

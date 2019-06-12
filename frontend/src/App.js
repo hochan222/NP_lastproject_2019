@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Chart from "react-apexcharts";
+import ImgMediaCard from "./components/ImgMediaCard"
 
 class App extends Component {
   state = {
@@ -68,6 +69,7 @@ class App extends Component {
   render() {
       return (
         <>  
+            <ImgMediaCard/>
             <div className="row">
                 <div className="mixed-chart">
                     <Chart
