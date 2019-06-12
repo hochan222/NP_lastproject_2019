@@ -31,6 +31,7 @@ def rssi_post(request):
         received_json_data=json.loads(request.body)
         print(received_json_data)
         print(received_json_data.get('reader'))
+        print(Post_rssi.objects.all())
 
         Post_rssi.objects.create(reader=received_json_data.get('reader'),\
                                  beaconType = received_json_data.get('beaconType'),\
