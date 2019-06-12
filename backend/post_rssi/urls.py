@@ -22,5 +22,6 @@ urlpatterns = [
     # path('crawl/', views.ListBachelorData.as_view()),
     # path('<int:pk>/', views.DetailPost.as_view()),
     # path('', views.IoTPost.as_view()),
-    path('', views.rssi_post)
+    path('', views.rssi_post),
+    path('serial/', views.rssi_serial.as_view()),
 ]

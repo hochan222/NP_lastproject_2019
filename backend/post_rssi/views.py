@@ -16,6 +16,8 @@ django.setup()
 
 from post_rssi.models import Post_rssi
 
+from .serializers import rssiSerializer
+
  # beaconType = models.CharField(max_length=200)
     # distance = models.IntegerField()
     # hashcode = models.CharField(max_length=200)
@@ -55,3 +57,8 @@ def rssi_post(request):
         print(request.FILES)
 
     return HttpResponse("Hi")
+
+
+class rssi_serial(generics.ListCreateAPIView):
+    queryset = Post_rssi.objects.all()
+    serializer_class = rssiSerializer
