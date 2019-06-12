@@ -49,6 +49,9 @@ def rssi_post(request):
 
         print('RSSI : ', rssi, 'txPower : ', txPower)
         print(round(dist, 2))
+        data = {'dist': round(dist, 2)}
+        with open(os.path.join(BASE_DIR, 'rssi_data.json'), 'w') as outfile:
+            json.dump(data, outfile)
 
         Post_rssi.objects.create(data = str(round(dist, 2)))
 
