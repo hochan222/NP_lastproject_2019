@@ -38,12 +38,9 @@ def rssi_post(request):
                     txPower = beacon["txPower"]
                     ratio = rssi*1.0/txPower;
                     dist = 0
-                    if ratio < 1.0:
-                        dist = math.pow(ratio, 10)
-                    else:
-                        dist =  (0.89976)*math.pow(ratio,7.7095) + 0.111
+                    dist = math.pow(10, ((txPower - rssi)/(10*2)))
                     print('RSSI : ', rssi, 'txPower : ', txPower)
-                    print(dist)
+                    print(round(dist, 2))
             else:
                 print("mac not match")
         # print(Post_rssi.objects.all())
@@ -55,4 +52,4 @@ def rssi_post(request):
     else:
         print(request.FILES)
 
-    return HttpResponse("hi")
+    return HttpResponse(str(round(dist, 2)))
