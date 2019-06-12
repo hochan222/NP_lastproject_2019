@@ -6,3 +6,9 @@ class Post_rssi(models.Model):
     
     def __str__(self):
         return self.data
+
+class one_rssi(models.Model):
+    data = models.CharField(max_length=200)
+    
+    def __str__(self):
+        return self.data

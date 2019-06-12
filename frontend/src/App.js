@@ -29,6 +29,7 @@ class App extends Component {
         
           const res = await fetch('http://ec2-13-209-76-226.ap-northeast-2.compute.amazonaws.com:8080/rssi/serial/');
           const posts = await res.json();
+          console.log(post);
           this.id = [];
           let data = [];
           const newSeries = [];

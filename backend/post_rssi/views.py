@@ -52,6 +52,8 @@ def rssi_post(request):
 
         Post_rssi.objects.create(data = str(round(dist, 2)))
 
+        one_rssi.objects.all().delete()
+        Post_rssi.objects.create(data = str(round(dist, 2)))
         # print(Post_rssi.objects.all())
         # print(request)
     else:
