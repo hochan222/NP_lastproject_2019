@@ -7,12 +7,6 @@ import time
 from slacker import Slacker
 import os, json
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
-
-import django
-django.setup()
-
-from post_rssi.models import one_rssi
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOKEN = []
