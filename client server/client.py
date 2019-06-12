@@ -131,6 +131,10 @@ class IoTClient:
                     except StopIteration:
                         print('Fail to Get Computer Data')
                         break
+                    if isLocked:
+                        print('isLocked : True')
+                    else:
+                        print('isLocked : False')
                     msgid += True
                     request = dict(method='POST', deviceid=self.deviceid, msgid=msgid, data=data)
                     request_bytes = json.dumps(request).encode('utf-8') + b'\n'
