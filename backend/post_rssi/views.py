@@ -52,4 +52,4 @@ def rssi_post(request):
     else:
         print(request.FILES)
 
-    return HttpResponse(str(round(dist, 2)))
+    return HttpResponse("Hi")
