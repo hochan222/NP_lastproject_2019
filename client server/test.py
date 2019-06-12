@@ -1,16 +1,8 @@
-import cv2
-import json
+import math
 
-def imageCapture():
-    video_capture = cv2.VideoCapture(False)
-    if not video_capture.isOpened():
-        raise Exception("Could not open video device")
-    ret, frame = video_capture.read()
-    print(type(frame))
-    #with open('image_file.txt', 'w') as outfile:
-    #    outfile.write(str(frame))
-    video_capture.release()
+txPower = -69
+rssi = -60
 
+dist = math.pow(10, ((txPower - rssi)/(10*2)))
+print(dist)
 
-
-imageCapture()
