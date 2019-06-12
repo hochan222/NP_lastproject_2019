@@ -33,14 +33,17 @@ def rssi_post(request):
         print(received_json_data.get('reader'))
         print(Post_rssi.objects.all())
 
-        Post_rssi.objects.create(reader=received_json_data.get('reader'),\
+        Post_rssi.objects.create(beaconAddress = received_json_data.get('beaconAddress'),\
                                  beaconType = received_json_data.get('beaconType'),\
-                                 txPower = received_json_data.get('txPower'),\
-                                 lastMinuSeen = received_json_data.get('lastMionuSeen'),\
-                                 lastMinuSeenrssi = received_json_data.get('lastMinuSeenrssi'),\
-                                 ibeaconData = received_json_data.get('ibeaconData'),\
-                                 hashcode = received_json_data.get('hashcode'),\
-                                 distance = received_json_data.get('distance'))
+                                 distance = received_json_data.get('txPower'),\
+                                 hashcode = received_json_data.get('lastMionuSeen'),\
+                                 ibeaconData = received_json_data.get('lastMinuSeenrssi'),\
+                                 lastMinuSeen = received_json_data.get('ibeaconData'),\
+                                 rssi = received_json_data.get('hashcode'),\
+                                 txPower = received_json_data.get('distance'),\
+                                 reader=received_json_data.get('reader'))
+
+
 
         # print(Post_rssi.objects.all())
         print(request)
