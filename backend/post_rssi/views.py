@@ -48,7 +48,7 @@ def rssi_post(request):
         print('RSSI : ', rssi, 'txPower : ', txPower)
         print(round(dist, 2))
 
-        Post_rssi.objects.create(data=received_json_data)
+        Post_rssi.objects.create(data=str(dist))
 
         # print(Post_rssi.objects.all())
         # print(request)
