@@ -3,7 +3,6 @@ import socketserver, json, selectors
 import logging
 import threading
 import time
-
 from slacker import Slacker
 import os, json
 

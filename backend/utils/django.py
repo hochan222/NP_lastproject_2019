@@ -114,14 +114,13 @@ class raspberry_post_server(socketserver.StreamRequestHandler):
             else:
                 response['activate'] = False
 
-
-            response = json.dumps(response)
-            self.wfile.write(response.encode('utf-8') + b'\n')
-            self.wfile.flush()
-            if response.get("activate"):
+            if response.get('activate'):
                 print(response.get('deviceid'), ' - Status - activate : True')
             else:
                 print(response.get('deviceid'), ' - Status - activate : False')
+            response = json.dumps(response)
+            self.wfile.write(response.encode('utf-8') + b'\n')
+            self.wfile.flush()
 
 def raspberry_post():
     rasp_addr = ("", 8095)
