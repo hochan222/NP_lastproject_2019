@@ -133,7 +133,7 @@ class raspberry_post_server(socketserver.StreamRequestHandler):
             print(type(rssiDist))
             if fLock:
                 if (rssiDist > 8.1):
-                    #slack_notify()
+                    slack_notify()
                     print('Buzzer Activate')
                     response['activate'] = True
             else:
