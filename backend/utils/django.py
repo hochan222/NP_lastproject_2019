@@ -47,6 +47,9 @@ def slack_notify(text=None, channel='#backend', username='알림봇', attachment
 
 rssi = 0
 buzzer_state = None
+noteBookActivate = False
+lock = False
+fLock = False
 # django main server
 class IoTRequestHandler(socketserver.StreamRequestHandler):
     def handle(self):
@@ -159,7 +162,7 @@ class rssiRenew(socketserver.StreamRequestHandler):
 
 class note_book_server(socketserver.StreamRequestHandler):
     def handle(self):
-        global activate
+        global noteBookActivate, flock, lock
         client = self.request.getpeername()
         print("Client connecting: {}".format(client))
 
@@ -202,10 +205,10 @@ class note_book_server(socketserver.StreamRequestHandler):
 
             response = dict(status=status, deviceid=request.get('deviceid'),
                             msgid=request.get('msgid'))
-            if activate:
-                response['activate'] = True
+            if noteBookActivate:
+                response['noteBookActivate'] = True
             else:
-                response['activate'] = False
+                response['noteBookActivate'] = False
             response = json.dumps(response)
             self.wfile.write(response.encode('utf-8') + b'\n')
             self.wfile.flush()
@@ -275,7 +278,6 @@ def raspberry_post():
         server.serve_forever()
 
 def server_for_notebook():
-    activate = False
     notebook_addr = ("", 5555)
     print("5555")
     if not os.path.exists('data_file.json'):
