@@ -15,7 +15,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
 import django
 django.setup()
 
-from post_rssi.models import Post_rssi
+from post_rssi.models import Post_rssi, one_rssi
 
 from .serializers import rssiSerializer
 
@@ -53,7 +53,7 @@ def rssi_post(request):
         Post_rssi.objects.create(data = str(round(dist, 2)))
 
         one_rssi.objects.all().delete()
-        Post_rssi.objects.create(data = str(round(dist, 2)))
+        one_rssi.objects.create(data = str(round(dist, 2)))
         # print(Post_rssi.objects.all())
         # print(request)
     else:
