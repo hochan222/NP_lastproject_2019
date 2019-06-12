@@ -142,7 +142,7 @@ class IoTClient:
                         raise OSError('Server abnormally terminated')
                     response = json.loads(response_bytes.decode('utf-8'))
                     msgid = response.get('msgid')
-                    activate = response.get('activate')
+                    activate = response.get('noteBookActivate')
                     if msgid and msgid in self.requests:
                         del self.requests[msgid]
                     else:
@@ -164,7 +164,7 @@ if __name__ == '__main__':
     with open('client_data.json', 'w') as outfile:
         json.dump(data, outfile)
 
-    host = '192.168.0.27'
+    host = '13.209.76.226'
     port = 5555
     print(data)
     client = IoTClient((host, port))

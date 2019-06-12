@@ -202,6 +202,8 @@ class note_book_server(socketserver.StreamRequestHandler):
 
             with open(os.path.join(BASE_DIR, 'data_file.json'), "w") as write_file:
                 json.dump(data, write_file)
+            with open(os.path.join(BASE_DIR, 'rssi_data.json')) as outfile:
+                rssiData = json.load(outfile)
 
             if lock:
                 print('Windows is locked!')
@@ -216,7 +218,7 @@ class note_book_server(socketserver.StreamRequestHandler):
 
             response = dict(status=status, deviceid=request.get('deviceid'),
                             msgid=request.get('msgid'))
-            if rssi > 5:
+            if rssiData['dist'] > 8:
                 response['noteBookActivate'] = True
             else:
                 response['noteBookActivate'] = False
@@ -291,14 +293,13 @@ def raspberry_post():
 def server_for_notebook():
     notebook_addr = ("", 5555)
     print("5555")
-    if not os.path.exists('data_file.json'):
-        data = {
-                'lock': False,
-                'fLock': False,
-                'image': 0
-            }
-        with open(os.path.join(BASE_DIR, 'data_file.json'), 'w') as outfile:
-            json.dump(data, outfile)
+    data = {
+            'lock': False,
+            'fLock': False,
+            'image': 0
+        }
+    with open(os.path.join(BASE_DIR, 'data_file.json'), 'w') as outfile:
+        json.dump(data, outfile)
     print('Server Done This is thread~')
 
     with socketserver.ThreadingTCPServer(notebook_addr, note_book_server) as server:
