@@ -27,7 +27,7 @@ from post_rssi.models import Post_rssi
 @csrf_exempt
 def rssi_post(request):
     if request.method == 'POST':
-        Post_rssi.objects.all().delete()
+        # Post_rssi.objects.all().delete()
 
         received_json_data=json.loads(request.body)
 
@@ -48,7 +48,7 @@ def rssi_post(request):
         print('RSSI : ', rssi, 'txPower : ', txPower)
         print(round(dist, 2))
 
-        Post_rssi.objects.create(data=received_json_data)
+        Post_rssi.objects.create(distance= dist)
 
         # print(Post_rssi.objects.all())
         # print(request)
