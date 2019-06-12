@@ -113,6 +113,7 @@ class raspberry_post_server(socketserver.StreamRequestHandler):
                 if fLock:
                     #slack_notify()
                     response['activate'] = True
+                response['activate'] = False
             else:
                 response['activate'] = False
 
