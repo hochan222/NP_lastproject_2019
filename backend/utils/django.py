@@ -108,7 +108,7 @@ class raspberry_post_server(socketserver.StreamRequestHandler):
             # reply response message
             response = dict(status=status, deviceid=request.get('deviceid'),
                             msgid=request.get('msgid'))
-
+            print('PI : ',rssiDist)
             if fLock:
                 if (rssiDist > 8):
                     #slack_notify()
