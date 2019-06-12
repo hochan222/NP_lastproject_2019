@@ -16,7 +16,7 @@ def get_secret(setting, secrets=secrets):
 
 def slack_notify(text=None, channel='#backend', username='알림봇', attachments=None):
     # TOKEN = get_secret("slackToken")
-    TOKEN = "xoxb-623136227107-661697401447-zS0wWhpiaouxHV9hxNi1w4ti"
+    TOKEN = "xoxb-623136227107-661697401447-dU6MKUfX8dKQtmDoQU2wDXxk"
     slack = Slacker(TOKEN)
     attachments = [{
     "pretext": "경고 알림",
