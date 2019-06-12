@@ -6,14 +6,24 @@ import json
 from django.views.generic import View
 from django.http import HttpResponse
 from django.conf import settings
-import os 
+
+from datetime import date, time, datetime
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
+
+import django
+django.setup()
+
+from post_rssi.models import Post_rssi
 
 @csrf_exempt
 def rssi_post(request):
     if request.method == 'POST':
-        print(request)
         received_json_data=json.loads(request.body)
         print(received_json_data)
+        Post_rssi.objects.create(reader=received_json_data)
+        print(Post_rssi.objects.all())
+        print(request)
     else:
         print(request.FILES)
 
