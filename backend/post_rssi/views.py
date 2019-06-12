@@ -15,6 +15,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
 import django
 django.setup()
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 from post_rssi.models import Post_rssi, one_rssi
 
 from .serializers import rssiSerializer
