@@ -37,18 +37,19 @@ def imageCapture(eventId):
     if not video_capture.isOpened():
         raise Exception("Could not open video device")
     ret, frame = video_capture.read()
+    cv2.imwrite(imageName, frame)
     print('Image Captured!')
     video_capture.release()
     isCap = False
 
 def checkLogon(dataSet):
-    global isLocked
+    global isLocked, isServer
     last = 0
     lastEvents = []
     login = 0
     server = 'localhost'
     logtype = 'Security'
-    while True:
+    while isServer:
         hand = win32evtlog.OpenEventLog(server,logtype)
         flags = win32evtlog.EVENTLOG_BACKWARDS_READ|win32evtlog.EVENTLOG_SEQUENTIAL_READ
         total = win32evtlog.GetNumberOfEventLogRecords(hand)
@@ -60,11 +61,11 @@ def checkLogon(dataSet):
                     #print(eventId)
                     if eventId == 4624:
                         print('Login Detected!')
+                        isLocked = False
                         data = getData()
                         data['fLock'] = False
                         data['lock'] = False
                         writeData(data)
-                        isLocked = False
                         break
                     elif eventId == 4625:
                         print('Login Failed Detected!')
@@ -110,7 +111,7 @@ class IoTClient:
         return []
 
     def run(self):
-        global isLocked
+        global isLocked, isServer
         msgid = 0
 
         while True:
@@ -140,6 +141,7 @@ class IoTClient:
                     if not response_bytes:
                         self.sock.close()
                         raise OSError('Server abnormally terminated')
+                        isServer = False
                     response = json.loads(response_bytes.decode('utf-8'))
                     msgid = response.get('msgid')
                     activate = response.get('noteBookActivate')
@@ -152,8 +154,10 @@ class IoTClient:
                             lockComp()
             except Exception as e:
                 print(e)
+                isServer = False
                 break
 
+isServer = True
 isLocked = False
 if __name__ == '__main__':
     data = {
@@ -164,7 +168,7 @@ if __name__ == '__main__':
     with open('client_data.json', 'w') as outfile:
         json.dump(data, outfile)
 
-    host = '13.209.76.226'
+    host = '13.124.30.140'
     port = 5555
     print(data)
     client = IoTClient((host, port))
@@ -172,4 +176,4 @@ if __name__ == '__main__':
     eventHandler.start()
     client.run()
 
-    print('Client Successfully Up and Running...!')
+    print('Server terminated....')

@@ -50,7 +50,7 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
 
             response = dict(status=status, deviceid=request.get('deviceid'),
                             msgid=request.get('msgid'))
-            if activate:
+            if response.get('msgid') == 5:
                 response['activate'] = True
             else:
                 response['activate'] = False

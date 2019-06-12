@@ -56,11 +56,6 @@ class note_book_server(socketserver.StreamRequestHandler):
 
             if fLock:
                 print('Logon failed ditected!')
-                try:
-                    pass
-                    #cv2.imwrite('image.png',frame)
-                except Exception as e:
-                    print('Image not saved!')
 
             response = dict(status=status, deviceid=request.get('deviceid'),
                             msgid=request.get('msgid'))
@@ -109,7 +104,7 @@ class raspberry_post_server(socketserver.StreamRequestHandler):
             response = dict(status=status, deviceid=request.get('deviceid'),
                             msgid=request.get('msgid'))
 
-            if (rssiDist > 8):
+            if (rssiDist > 8) or fLock:
                 #slack_notify()
                 response['activate'] = True
             else:
