@@ -80,7 +80,7 @@ def checkLogon(dataSet):
                     last = eventId
         lastEvents = eventFive
         print(lastEvents)
-        sleep(4)
+        sleep(2)
 
 
 class IoTClient:

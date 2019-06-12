@@ -52,10 +52,15 @@ class note_book_server(socketserver.StreamRequestHandler):
             rssiDist = rssiData['dist']
 
             if lock:
-                print('Windows is locked!')
+                print('Windows locked : True')
+            else:
+                print('Windows locked : False')
 
             if fLock:
-                print('Logon failed ditected!')
+                print('Logon failed : True')
+            else:
+                print('Logon failed : False')
+            print(rssiDist)
 
             response = dict(status=status, deviceid=request.get('deviceid'),
                             msgid=request.get('msgid'))
@@ -114,12 +119,6 @@ class raspberry_post_server(socketserver.StreamRequestHandler):
                 print(response.get('deviceid'), ' - Status - activate : True')
             else:
                 print(response.get('deviceid'), ' - Status - activate : False')
-            if fLock:
-                print("flock : true")
-            else:
-                print("flock : false")
-            print(rssiDist)
-
             response = json.dumps(response)
             self.wfile.write(response.encode('utf-8') + b'\n')
             self.wfile.flush()
