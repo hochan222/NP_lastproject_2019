@@ -130,5 +130,5 @@ if __name__ == '__main__':
 
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s:%(levelname)s:%(message)s')
-    client = IoTClient(("ec2-13-125-224-23.ap-northeast-2.compute.amazonaws.com", 10007), 88)
+    client = IoTClient(("ec2-13-209-76-226.ap-northeast-2.compute.amazonaws.com", 10007), 88)
     client.run()
