@@ -112,6 +112,8 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
                             msgid=request.get('msgid'))
             if buzzerActivate:
                 response['activate'] = True
+            else:
+                response['activate'] = False
             response = json.dumps(response)
             self.wfile.write(response.encode('utf-8') + b'\n')
             self.wfile.flush()
