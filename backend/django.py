@@ -9,8 +9,9 @@ import os, json
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
 
-import django
-django.setup()
+from django.db import models
+# import django
+# django.setup()
 
 from post_rssi.models import one_rssi
 
