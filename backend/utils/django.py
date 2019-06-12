@@ -1,6 +1,6 @@
 import socket, sys
 import socketserver, json, selectors
-import logging
+# import logging
 import threading
 import time
 from slacker import Slacker
@@ -79,7 +79,7 @@ class raspberry_post_server(socketserver.StreamRequestHandler):
         global buzzer_state, rssiDist, flock
 
         client = self.request.getpeername()
-        logging.info("Client connecting: {}".format(client))
+        # logging.info("Client connecting: {}".format(client))
 
         for line in self.rfile:
             try:
@@ -93,11 +93,11 @@ class raspberry_post_server(socketserver.StreamRequestHandler):
                 response = json.dumps(response)
                 self.wfile.write(response.encode('utf-8') + b'\n')
                 self.wfile.flush()
-                logging.error(error_msg)
+                # logging.error(error_msg)
                 break
             else:
                 status = 'OK'
-                logging.debug("{}:{}".format(client, request))
+                # logging.debug("{}:{}".format(client, request))
 
 
             # reply response message
@@ -114,6 +114,12 @@ class raspberry_post_server(socketserver.StreamRequestHandler):
                 print(response.get('deviceid'), ' - Status - activate : True')
             else:
                 print(response.get('deviceid'), ' - Status - activate : False')
+            if fLock:
+                print("flock : true")
+            else:
+                print("flock : false")
+            print(rssiDist)
+
             response = json.dumps(response)
             self.wfile.write(response.encode('utf-8') + b'\n')
             self.wfile.flush()
@@ -121,7 +127,7 @@ class raspberry_post_server(socketserver.StreamRequestHandler):
 def raspberry_post():
     rasp_addr = ("", 8095)
     with socketserver.ThreadingTCPServer(rasp_addr, raspberry_post_server) as server:
-        logging.info('rasp Server starts: {}'.format(rasp_addr))
+        # logging.info('rasp Server starts: {}'.format(rasp_addr))
         server.serve_forever()
 
 def server_for_notebook():
@@ -136,7 +142,7 @@ def server_for_notebook():
     print('Server Done This is thread~')
 
     with socketserver.ThreadingTCPServer(notebook_addr, note_book_server) as server:
-        logging.info('rasp Server starts: {}'.format(notebook_addr))
+        # logging.info('rasp Server starts: {}'.format(notebook_addr))
         server.serve_forever()
 
 e = threading.Thread(name='rasp', target=raspberry_post)
