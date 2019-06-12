@@ -22,7 +22,7 @@ def rssi_post(request):
         received_json_data=json.loads(request.body)
         print(received_json_data)
         print(received_json_data.get('reader'))
-        Post_rssi.objects.create(reader=received_json_data)
+        Post_rssi.objects.create(reader=received_json_data.get('reader'))
         print(Post_rssi.objects.all())
         print(request)
     else:
