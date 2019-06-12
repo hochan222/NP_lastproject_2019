@@ -36,14 +36,17 @@ def rssi_post(request):
                 if beacon["ibeaconData"]["uuid"] == "74278bda-b644-4520-8f0c-720eaf059935":
                     rssi = beacon["rssi"]
                     txPower = beacon["txPower"]
-                    ratio = rssi*1.0/txPower;
+                    ratio = rssi*1.0/txPower
                     dist = 0
                     dist = math.pow(10, ((txPower - rssi)/(10*2)))
-                    print('RSSI : ', rssi, 'txPower : ', txPower)
-                    print(round(dist, 2))
+                    # print('RSSI : ', rssi, 'txPower : ', txPower)
+                    # print(round(dist, 2))
             else:
                 print("mac not match")
         # print(Post_rssi.objects.all())
+
+        print('RSSI : ', rssi, 'txPower : ', txPower)
+        print(round(dist, 2))
 
         Post_rssi.objects.create(data=received_json_data)
 
