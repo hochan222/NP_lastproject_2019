@@ -115,8 +115,6 @@ class raspberry_post_server(socketserver.StreamRequestHandler):
                     #slack_notify()
                     print('Buzzer Activate')
                     response['activate'] = True
-                response['activate'] = False
-                print('After Dist')
             else:
                 response['activate'] = False
 
