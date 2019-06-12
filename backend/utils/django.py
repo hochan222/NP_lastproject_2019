@@ -122,7 +122,7 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
             # logging.debug("%s" % response)
 
         # end of for loop
-        logging.info('Client closing: {}'.format(client))
+        # logging.info('Client closing: {}'.format(client))
 
 # rssi renew server
 class rssiRenew(socketserver.StreamRequestHandler):
@@ -166,7 +166,7 @@ class rssiRenew(socketserver.StreamRequestHandler):
             logging.debug("%s" % response)
 
         # end of for loop
-        logging.info('Client closing: {}'.format(client))
+        # logging.info('Client closing: {}'.format(client))
 
 class note_book_server(socketserver.StreamRequestHandler):
     def handle(self):
@@ -225,8 +225,8 @@ class note_book_server(socketserver.StreamRequestHandler):
             response = json.dumps(response)
             self.wfile.write(response.encode('utf-8') + b'\n')
             self.wfile.flush()
-            print("%s" % response)
-
+            # print("%s" % response)
+        
         print('Client closing: {}'.format(client))
 
 # logging.basicConfig(filename='', level=logging.INFO)
@@ -275,10 +275,12 @@ class raspberry_post_server(socketserver.StreamRequestHandler):
 
             
             response = json.dumps(response)
+            
             self.wfile.write(response.encode('utf-8') + b'\n')
             self.wfile.flush()
             logging.debug("%s" % response)
-
+            if response.get("activate"):
+                print("ghiogigiigigidag")
         # end of for loop
         logging.info('Client closing: {}'.format(client))
 
