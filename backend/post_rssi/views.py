@@ -31,7 +31,7 @@ from .serializers import rssiSerializer
 @csrf_exempt
 def rssi_post(request):
     if request.method == 'POST':
-        # Post_rssi.objects.all().delete()
+        Post_rssi.objects.all().delete()
         dist = 0
         received_json_data=json.loads(request.body)
 
