@@ -29,7 +29,11 @@ def rssi_post(request):
     if request.method == 'POST':
         Post_rssi.objects.all().delete()
         received_json_data=json.loads(request.body)
-        print(type(received_json_data.get('beacons')))
+        for beacon in received_json_data.get('beacons'):
+            if beacon["beaconAddress"] == "18:62:E4:3D:F7:00": 
+                print("a")
+            else:
+                print("b")
         # print(Post_rssi.objects.all())
 
         Post_rssi.objects.create(data=received_json_data)
