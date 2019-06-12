@@ -96,16 +96,16 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
             print(rssi)
 
             # apply rules to control actuators
-            buzzerActivate = False
-            #if rssi:    # both the temperature and humidity reported
-                # activate actuators if necessary to control
-            if (rssiDist < 8 or fLock):
-                buzzerActivate = True
-                buzzer_state = "ON"
-                slack_notify()
-            else:
-                buzzerActivate = False
-                buzzer_state = "OFF"
+            # buzzerActivate = False
+            # #if rssi:    # both the temperature and humidity reported
+            #     # activate actuators if necessary to control
+            # if (rssiDist < 8 or fLock):
+            #     buzzerActivate = True
+            #     buzzer_state = "ON"
+            #     slack_notify()
+            # else:
+            #     buzzerActivate = False
+            #     buzzer_state = "OFF"
 
             # reply response message
             response = dict(status=status, deviceid=request.get('deviceid'),
@@ -236,7 +236,7 @@ logging.basicConfig(filename='', level=logging.DEBUG,
 
 class raspberry_post_server(socketserver.StreamRequestHandler):
     def handle(self):
-        global buzzer_state
+        global buzzer_state, rssiDist, flock
 
         client = self.request.getpeername()
         logging.info("Client connecting: {}".format(client))
@@ -264,10 +264,16 @@ class raspberry_post_server(socketserver.StreamRequestHandler):
             # reply response message
             response = dict(status=status, deviceid=request.get('deviceid'),
                             msgid=request.get('msgid'))
-            activate = {}
-            activate["buzzer"] = buzzer_state
-            if activate:
-                response['activate'] = activate
+
+            #if rssi:    # both the temperature and humidity reported
+                # activate actuators if necessary to control
+            if (rssiDist < 8 or fLock):
+                slack_notify()
+                response['activate'] = True
+            else:
+                response['activate'] = False
+
+            
             response = json.dumps(response)
             self.wfile.write(response.encode('utf-8') + b'\n')
             self.wfile.flush()
