@@ -27,8 +27,8 @@ from post_rssi.models import Post_rssi
 @csrf_exempt
 def rssi_post(request):
     if request.method == 'POST':
-        # Post_rssi.objects.all().delete()
-
+        Post_rssi.objects.all().delete()
+        dist = 0
         received_json_data=json.loads(request.body)
 
         for beacon in received_json_data.get('beacons'):
@@ -37,7 +37,6 @@ def rssi_post(request):
                     rssi = beacon["rssi"]
                     txPower = beacon["txPower"]
                     ratio = rssi*1.0/txPower
-                    dist = 0
                     dist = math.pow(10, ((txPower - rssi)/(10*2)))
                     # print('RSSI : ', rssi, 'txPower : ', txPower)
                     # print(round(dist, 2))
@@ -46,7 +45,7 @@ def rssi_post(request):
         # print(Post_rssi.objects.all())
 
         print('RSSI : ', rssi, 'txPower : ', txPower)
-        # dist = round(dist, 2)
+        print(round(dist, 2))
 
         Post_rssi.objects.create(str(dist))
 
