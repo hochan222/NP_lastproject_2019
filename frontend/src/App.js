@@ -17,13 +17,9 @@ class App extends Component {
         },
         series: [
             {
-              name: "temperature",
+              name: "distance",
               data: []
-            },
-            {
-                name: "humidity",
-                data: []
-              }
+            }
         ]
   };
 
@@ -31,25 +27,21 @@ class App extends Component {
       try {
         //   let time, temperature, humidity;
         
-          const res = await fetch('http://ec2-52-79-237-25.ap-northeast-2.compute.amazonaws.com:8080/api/');
+          const res = await fetch('http://ec2-13-209-76-226.ap-northeast-2.compute.amazonaws.com:8080/rssi/serial/');
           const posts = await res.json();
-          this.time = [];
-          let temperature = [], humidity = [];
+          this.id = [];
+          let data = [];
           const newSeries = [];
           let newOptions = {};
 
           posts.map(i => {
-              this.time.push(i.time);
-              temperature.push(i.temperature);
-              humidity.push(i.humidity);   
+              this.time.push(i.id);
+              data.push(i.data);
           });
-          console.log(this.time)
-          console.log(temperature);
-          console.log(humidity);
+          console.log(this.id)
+          console.log(data);
 
-          newSeries.push({name: 'temerature', data: temperature});
-          newSeries.push({name: 'humidity', data: humidity});
-          console.log(this.time);
+          newSeries.push({name: 'distance', data: data});
         //   newOptions = this.state.options;
         //   newOptions.xaxis.categories = this.time;
         //   console.log(newOptions)
