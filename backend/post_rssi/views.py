@@ -47,7 +47,7 @@ def rssi_post(request):
 
 
         print(Post_rssi.objects.all())
-        print(request)
+        # print(request)
     else:
         print(request.FILES)
 
