@@ -27,7 +27,7 @@ from post_rssi.models import Post_rssi
 @csrf_exempt
 def rssi_post(request):
     if request.method == 'POST':
-        Post_rssi.objects.add().delete()
+        Post_rssi.objects.all().delete()
         received_json_data=json.loads(request.body)
         print(received_json_data)
         print(received_json_data.get('reader'))
