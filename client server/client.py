@@ -66,6 +66,7 @@ def checkLogon(dataSet):
                         data['fLock'] = False
                         data['lock'] = False
                         writeData(data)
+                        last = eventId
                         break
                     elif eventId == 4625:
                         print('Login Failed Detected!')
@@ -76,11 +77,11 @@ def checkLogon(dataSet):
                         data = getData()
                         data['fLock'] = True
                         writeData(data)
+                        last = eventId
                         break
-                    last = eventId
         lastEvents = eventFive
         print(lastEvents)
-        sleep(2)
+        sleep(4)
 
 
 class IoTClient:
