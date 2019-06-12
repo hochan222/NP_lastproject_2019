@@ -30,19 +30,19 @@ class App extends Component {
           const res = await fetch('http://ec2-13-209-76-226.ap-northeast-2.compute.amazonaws.com:8080/rssi/serial/');
           const posts = await res.json();
           console.log(posts);
-          this.id = [];
-          let data = [];
+        //   this.id = [];
+          let data2 = [];
           const newSeries = [];
           let newOptions = {};
 
           posts.map(i => {
-              this.time.push(i.id);
-              data.push(i.data);
+            //   this.time.push(i.id);
+              data2.push(i.data);
           });
           console.log(this.id)
-          console.log(data);
+          console.log(data2);
 
-          newSeries.push({name: 'distance', data: data});
+          newSeries.push({name: 'distance', data: data2});
         //   newOptions = this.state.options;
         //   newOptions.xaxis.categories = this.time;
         //   console.log(newOptions)

@@ -114,10 +114,12 @@ class IoTRequestHandler(socketserver.StreamRequestHandler):
                 response['activate'] = True
             else:
                 response['activate'] = False
+                
             response = json.dumps(response)
+            print(response.get('activate'))
             self.wfile.write(response.encode('utf-8') + b'\n')
             self.wfile.flush()
-            logging.debug("%s" % response)
+            # logging.debug("%s" % response)
 
         # end of for loop
         logging.info('Client closing: {}'.format(client))
