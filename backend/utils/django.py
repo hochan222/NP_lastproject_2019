@@ -110,7 +110,7 @@ class raspberry_post_server(socketserver.StreamRequestHandler):
                             msgid=request.get('msgid'))
 
             if fLock:
-                if rssiDist > 8:
+                if (rssiDist > 8):
                     #slack_notify()
                     response['activate'] = True
                 response['activate'] = False
