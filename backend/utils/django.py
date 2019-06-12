@@ -17,7 +17,7 @@ rssiDist = 0
 
 class note_book_server(socketserver.StreamRequestHandler):
     def handle(self):
-        global noteBookActivate, flock, lock, rssiDist
+        global noteBookActivate, fLock, lock, rssiDist
         client = self.request.getpeername()
         print("Client connecting: {}".format(client))
 
