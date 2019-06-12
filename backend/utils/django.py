@@ -6,21 +6,21 @@ import time
 
 from slacker import Slacker
 import os, json
-from django.core.exceptions import ImproperlyConfigured
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOKEN = []
-secret_file = os.path.join(BASE_DIR, 'secret', 'slack_token.json')
+# secret_file = os.path.join(BASE_DIR, 'secret', 'slack_token.json')
 
-with open(secret_file) as f:
-    secrets = json.loads(f.read())
+# with open(secret_file) as f:
+#     secrets = json.loads(f.read())
 
-def get_secret(setting, secrets=secrets):
-    try:
-        return secrets["slackToken"]
-    except KeyError:
-        error_msg = "Set the {} environment variable".format(setting)
-        raise ImproperlyConfigured(error_msg)
+# def get_secret(setting, secrets=secrets):
+#     try:
+#         return secrets["slackToken"]
+#     except KeyError:
+#         error_msg = "Set the {} environment variable".format(setting)
+#         raise ImproperlyConfigured(error_msg)
 
 def slack_notify(text=None, channel='#backend', username='알림봇', attachments=None):
     # TOKEN = get_secret("slackToken")
